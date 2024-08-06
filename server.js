@@ -9,7 +9,7 @@ app.use(express.json());
 let database = {
   users: [
     {
-      id: '120',
+      id: 120,
       name: 'John',
       email: 'john@gmail.com',
       password: 'cookies',
@@ -17,7 +17,7 @@ let database = {
       joined: new Date()
     },
     {
-      id: '121',
+      id: 121,
       name: 'Sally',
       email: 'sally@gmail.com',
       password: 'bananas',
@@ -63,7 +63,7 @@ app.post('/register', (req, res) => {
       req.body.email !== database.users[0].email)
   {
     database.users.push({
-      id: '12' + database.users.length++,
+      id: Number('12' + database.users.length++),
       name: name,
       email: email,
       password: password,
