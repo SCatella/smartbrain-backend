@@ -27,20 +27,35 @@ let database = {
   ]
 }
 
-// const findUser = (res, id) => {
-//   let found = false;
+const findUser = (idNumber) => {
+  const userId = Number(idNumber);
+  let response = {
+    userValid: false,
+    userIndex: 0,
+    user: {}
+  };
 
-//   database.users.forEach((user, index) => {
-//     if (user.id === id) {
-//       found = true;
-//       return index;
-//     }
-//   })
-//   if (!found) {
-//     return res.json();
-//   }
-// }
+  if (Number.isInteger(userId)) {
+    database.users.forEach((user, index) => {
+      if (userId === user.id) {
+        response.userValid = true;
+        response.userIndex = index;
+        response.user = user;
+      }
+    })
+  }
+  return response;
+}
 
+const updateUserEntries = (userIndex) => {
+  const user = database.users[userIndex];
+  
+  user.entries++;
+  return user;
+}
+
+
+// Routes listed below.
 app.get('/', (req, res) => {
   res.send(database.users);
 })
@@ -52,7 +67,7 @@ app.post('/signin', (req, res) => {
       res.json('success');
     } else
     {
-      res.status(400).json('error logging in.')
+      res.status(400).json('Error logging in.')
     }
 })
 
@@ -79,33 +94,20 @@ app.post('/register', (req, res) => {
 
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
-  let found = false;
-
-  database.users.forEach((user) => {
-    if (user.id === id) {
-      found = true;
-      return res.json(user);
-    }
-  })
-  if (!found) {
-    return res.json();
+  
+  if (findUser(id).userValid === true) {
+    res.send(findUser(id));
+  } else {
+    res.status(400).json('User not found.');
   }
 })
 
 app.put('/image', (req, res) => {
   const { id } = req.body;
-  let found = false;
-
-  database.users.forEach((user, index) => {
-    if (user.id === id) {
-      found = true;
-      user.entries++
-      return res.json(user.entries);
-    }
-  })
-  if (!found) {
-    return res.json();
-  }
+  const user = findUser(id);
+  const entriesUpdater = updateUserEntries(user.userIndex);
+  
+  res.send(entriesUpdater);
 })
 
 app.listen(port, () => {
