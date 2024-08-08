@@ -1,7 +1,11 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 3000;
+
+const saltRounds = 10;
+
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
@@ -9,20 +13,32 @@ app.use(express.json());
 let database = {
   users: [
     {
-      id: 120,
+      id: '120',
       name: 'John',
       email: 'john@gmail.com',
-      password: 'cookies',
+      password: '$2b$10$6Jppb9PvKXohHO0gsmee1.VXFH4sQQp.AewifecTO5ArDn7NSV522',
       entries: 0,
       joined: new Date()
     },
     {
-      id: 121,
+      id: '121',
       name: 'Sally',
       email: 'sally@gmail.com',
-      password: 'bananas',
+      password: '$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq',
       entries: 0,
       joined: new Date()
+    }
+  ],
+  login: [
+    {
+      id: 987,
+      hash: '$2b$10$6Jppb9PvKXohHO0gsmee1.VXFH4sQQp.AewifecTO5ArDn7NSV522',
+      email: 'john@gmail.com'
+    },
+    {
+      id: 987,
+      hash: '$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq',
+      email: 'sally@gmail.com'
     }
   ]
 }
@@ -37,7 +53,7 @@ const findUser = (value) => {
   };
 
   database.users.forEach((user, index) => {
-    if (Number(value) === user.id || (value.email === user.email && value.password === user.password)) {
+    if (value === user.id || (value.email === user.email && value.password === user.password)) {
       package = {
         userValid: true,
         responseCode: 200,
@@ -69,6 +85,8 @@ const updateUserEntries = (userIndex) => {
   return user;
 }
 
+// BCRYPT for Password Security
+
 
 // Routes listed below.
 
@@ -96,8 +114,12 @@ app.post('/signin', (req, res) => {
 
 // Register New User:
 app.post('/register', (req, res) => {
-  const { name, email, password } = req.body;
-  const userPackage = findUser({ email: req.body.email, password: req.body.password });
+  const { name, email } = req.body;
+  bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+    const password = hash;
+    return password;
+  })
+  const userPackage = findUser({ email: email, password: password });
 
   if (!userPackage.userValid)
     {
