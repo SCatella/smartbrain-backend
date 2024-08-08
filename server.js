@@ -37,8 +37,7 @@ const findUser = (value) => {
   };
 
   database.users.forEach((user, index) => {
-    console.log(`value: ${value}, email: ${user.email}`)
-    if (value === user.id || value === user.email) {
+    if (Number(value) === user.id || (value.email === user.email && value.password === user.password)) {
       package = {
         userValid: true,
         responseCode: 200,
@@ -77,38 +76,46 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
-  res.send(findUser(req.body.email))
+  const userPackage = findUser({ email: req.body.email, password: req.body.password });
 
-  // if (req.body.email === database.users[0].email &&
-  //     req.body.password === database.users[0].password)
-  //   {
-  //     res.json('success');
-  //   } else
-  //   {
-  //     res.status(400).json('Error logging in.')
-  //   }
+  if (userPackage.userValid)
+    {
+      res.json('success');
+    } else
+    {
+      res.status(userPackage.responseCode).json(userPackage.errorMessage);
+    }
 })
 
 app.post('/register', (req, res) => {
   const { name, email, password } = req.body;
+  const userPackage = findUser({ email: req.body.email, password: req.body.password });
 
-  if (req.body.name !== database.users[0].name &&
-      req.body.email !== database.users[0].email)
-  {
-    newUser(name, email, password)
-    res.json(database.users[database.users.length-1])
-  } else
-  {
-    res.json('user already exists.')
-  }
+  if (!userPackage.userValid)
+    {
+      newUser(name, email, password);
+      res.json(database.users[database.users.length - 1]);
+    } else
+    {
+      res.json('User already exist.');
+    }
+
+  // if (req.body.name !== database.users[0].name &&
+  //     req.body.email !== database.users[0].email)
+  // {
+  //   newUser(name, email, password)
+  //   res.json(database.users[database.users.length-1])
+  // } else
+  // {
+  //   res.json('user already exists.')
+  // }
 })
 
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
-  const profileId = Number(id);
   
-  if (findUser(profileId).userValid === true) {
-    res.send(findUser(profileId));
+  if (findUser(id).userValid === true) {
+    res.send(findUser(id));
   } else {
     res.status(400).json('User not found.');
   }
