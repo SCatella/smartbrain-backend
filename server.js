@@ -16,7 +16,7 @@ let database = {
       id: '120',
       name: 'John',
       email: 'john@gmail.com',
-      password: '$2b$10$6Jppb9PvKXohHO0gsmee1.VXFH4sQQp.AewifecTO5ArDn7NSV522',
+      password: 'cookies',
       entries: 0,
       joined: new Date()
     },
@@ -36,7 +36,7 @@ let database = {
       email: 'john@gmail.com'
     },
     {
-      id: 987,
+      id: 988,
       hash: '$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq',
       email: 'sally@gmail.com'
     }
@@ -52,7 +52,9 @@ const findUser = (value) => {
     user: {}
   };
 
-  database.users.forEach((user, index) => {
+  for (let index = 0; index < database.users.length; index++) {
+    const user = database.users[index];
+
     if (value === user.id || (value.email === user.email && value.password === user.password)) {
       package = {
         userValid: true,
@@ -61,8 +63,10 @@ const findUser = (value) => {
         userIndex: index,
         user: user
       }
+
+      return package;
     }
-  })
+  }
   
   return package;
 }
