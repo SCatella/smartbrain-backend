@@ -15,7 +15,7 @@ let database = {
     {
       id: '120',
       name: 'John',
-      email: 'john@gmail.com',
+      email: 'john@gmail.com', //$2b$10$6Jppb9PvKXohHO0gsmee1.VXFH4sQQp.AewifecTO5ArDn7NSV522
       password: 'cookies',
       entries: 0,
       joined: new Date()
@@ -24,7 +24,7 @@ let database = {
       id: '121',
       name: 'Sally',
       email: 'sally@gmail.com',
-      password: '$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq',
+      password: 'apples', //$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq
       entries: 0,
       joined: new Date()
     }
