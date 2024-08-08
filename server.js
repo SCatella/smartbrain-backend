@@ -99,16 +99,6 @@ app.post('/register', (req, res) => {
     {
       res.json('User already exist.');
     }
-
-  // if (req.body.name !== database.users[0].name &&
-  //     req.body.email !== database.users[0].email)
-  // {
-  //   newUser(name, email, password)
-  //   res.json(database.users[database.users.length-1])
-  // } else
-  // {
-  //   res.json('user already exists.')
-  // }
 })
 
 app.get('/profile/:id', (req, res) => {
