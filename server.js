@@ -71,12 +71,19 @@ const updateUserEntries = (userIndex) => {
 
 
 // Routes listed below.
+
+// Home:
 app.get('/', (req, res) => {
   res.send(database.users);
 })
 
+// Sign In:
 app.post('/signin', (req, res) => {
-  const userPackage = findUser({ email: req.body.email, password: req.body.password });
+  const loginInformation = {
+    email: req.body.email,
+    password: req.body.password
+  };
+  const userPackage = findUser(loginInformation);
 
   if (userPackage.userValid)
     {
@@ -87,6 +94,7 @@ app.post('/signin', (req, res) => {
     }
 })
 
+// Register New User:
 app.post('/register', (req, res) => {
   const { name, email, password } = req.body;
   const userPackage = findUser({ email: req.body.email, password: req.body.password });
@@ -101,6 +109,7 @@ app.post('/register', (req, res) => {
     }
 })
 
+// Pull Profile Information On ID:
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
   
@@ -111,6 +120,7 @@ app.get('/profile/:id', (req, res) => {
   }
 })
 
+// Update User Entries Counter:
 app.put('/image', (req, res) => {
   const { id } = req.body;
   const user = findUser(id);
@@ -119,6 +129,7 @@ app.put('/image', (req, res) => {
   res.send(entriesUpdater);
 })
 
+// Run Server:
 app.listen(port, () => {
   console.log('app is running on port 3000...')
 })
