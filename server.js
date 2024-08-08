@@ -27,24 +27,40 @@ let database = {
   ]
 }
 
-const findUser = (idNumber) => {
-  const userId = Number(idNumber);
-  let response = {
+const findUser = (value) => {
+  let package = {
     userValid: false,
-    userIndex: 0,
+    responseCode: 400,
+    errorMessage: 'User not found.',
+    userIndex: -1,
     user: {}
   };
 
-  if (Number.isInteger(userId)) {
-    database.users.forEach((user, index) => {
-      if (userId === user.id) {
-        response.userValid = true;
-        response.userIndex = index;
-        response.user = user;
+  database.users.forEach((user, index) => {
+    console.log(`value: ${value}, email: ${user.email}`)
+    if (value === user.id || value === user.email) {
+      package = {
+        userValid: true,
+        responseCode: 200,
+        errorMessage: '',
+        userIndex: index,
+        user: user
       }
-    })
-  }
-  return response;
+    }
+  })
+  
+  return package;
+}
+
+const newUser = (name, email, password) => {
+  database.users.push({
+    id: 120 + database.users.length++,
+    name: name,
+    email: email,
+    password: password,
+    entries: 0,
+    joined: new Date()
+  })
 }
 
 const updateUserEntries = (userIndex) => {
@@ -61,14 +77,16 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
-  if (req.body.email === database.users[0].email &&
-      req.body.password === database.users[0].password)
-    {
-      res.json('success');
-    } else
-    {
-      res.status(400).json('Error logging in.')
-    }
+  res.send(findUser(req.body.email))
+
+  // if (req.body.email === database.users[0].email &&
+  //     req.body.password === database.users[0].password)
+  //   {
+  //     res.json('success');
+  //   } else
+  //   {
+  //     res.status(400).json('Error logging in.')
+  //   }
 })
 
 app.post('/register', (req, res) => {
@@ -77,14 +95,7 @@ app.post('/register', (req, res) => {
   if (req.body.name !== database.users[0].name &&
       req.body.email !== database.users[0].email)
   {
-    database.users.push({
-      id: Number('12' + database.users.length++),
-      name: name,
-      email: email,
-      password: password,
-      entries: 0,
-      joined: new Date()
-    })
+    newUser(name, email, password)
     res.json(database.users[database.users.length-1])
   } else
   {
@@ -94,9 +105,10 @@ app.post('/register', (req, res) => {
 
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
+  const profileId = Number(id);
   
-  if (findUser(id).userValid === true) {
-    res.send(findUser(id));
+  if (findUser(profileId).userValid === true) {
+    res.send(findUser(profileId));
   } else {
     res.status(400).json('User not found.');
   }
