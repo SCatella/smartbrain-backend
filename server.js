@@ -1,7 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
-const cors = require('cors');
 
 const app = express();
 const port = 3000;
