@@ -26,7 +26,7 @@ let database = {
       id: '121',
       name: 'Sally',
       email: 'sally@gmail.com',
-      password: '$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq',
+      password: 'apples',
       entries: 0,
       joined: new Date()
     }
@@ -109,13 +109,7 @@ app.post('/signin', (req, res) => {
   };
   const userPackage = findUser(loginInformation);
 
-  if (userPackage.userValid)
-    {
-      res.json('success');
-    } else
-    {
-      res.status(userPackage.responseCode).json(userPackage.errorMessage);
-    }
+  res.json(userPackage);
 })
 
 // Register New User:
