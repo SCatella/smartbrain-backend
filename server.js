@@ -75,7 +75,7 @@ const findUser = (value) => {
 
 const newUser = (name, email, password) => {
   database.users.push({
-    id: 120 + database.users.length++,
+    id: '12' + database.users.length++,
     name: name,
     email: email,
     password: password,
