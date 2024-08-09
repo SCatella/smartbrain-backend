@@ -99,7 +99,7 @@ const updateUserEntries = (userIndex) => {
 
 // Home:
 app.get('/', (req, res) => {
-  res.send(database.users);
+  res.send();
 })
 
 // Sign In:
