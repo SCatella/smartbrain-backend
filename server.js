@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
@@ -10,6 +11,7 @@ const saltRounds = 10;
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
+app.use(cors());
 app.use(cors());
 
 let database = {
@@ -75,7 +77,7 @@ const findUser = (value) => {
 
 const newUser = (name, email, password) => {
   database.users.push({
-    id: 120 + database.users.length++,
+    id: '12' + database.users.length++,
     name: name,
     email: email,
     password: password,
@@ -109,13 +111,7 @@ app.post('/signin', (req, res) => {
   };
   const userPackage = findUser(loginInformation);
 
-  if (userPackage.userValid)
-    {
-      res.json('success');
-    } else
-    {
-      res.status(userPackage.responseCode).json(userPackage.errorMessage);
-    }
+  res.json(userPackage);
 })
 
 // Register New User:
