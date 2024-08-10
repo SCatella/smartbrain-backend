@@ -73,19 +73,16 @@ const findUser = (value) => {
   return package;
 }
 
-const newUser = ({ name, email, password }) => {
+const newUser = ({ name, email, password }) => {  
   const user = {
-    id: '12' + database.users.length++,
+    id: '12' + database.users.length,
     name: name,
     email: email,
     password: password,
     entries: 0,
     joined: new Date()
   }
-
-  if (user !== null) {
-    database.users.push(user);
-  }
+  database.users.push(user);
 }
 
 const updateUserEntries = (userIndex) => {
@@ -124,9 +121,15 @@ app.post('/register', (req, res) => {
 
   if (!userPackage.userValid) {
     newUser(userInformation);
-    res.json(database.users[database.users.length - 1]);
+    res.json(findUser(userInformation));
   } else {
-    res.json('User already exist.');
+    const errorPackage = {
+      userValid: true,
+      responseCode: 400,
+      errorMessage: 'User already exists'
+    }
+
+    res.json(errorPackage);
   }
 })
 
@@ -153,4 +156,5 @@ app.put('/image', (req, res) => {
 // Run Server:
 app.listen(port, () => {
   console.log('app is running on port 3000...')
+  console.log(database.users);
 })
