@@ -11,7 +11,6 @@ const saltRounds = 10;
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cors());
-app.use(cors());
 
 let database = {
   users: [
@@ -74,15 +73,19 @@ const findUser = (value) => {
   return package;
 }
 
-const newUser = (name, email, password) => {
-  database.users.push({
+const newUser = ({ name, email, password }) => {
+  const user = {
     id: '12' + database.users.length++,
     name: name,
     email: email,
     password: password,
     entries: 0,
     joined: new Date()
-  })
+  }
+
+  if (user !== null) {
+    database.users.push(user);
+  }
 }
 
 const updateUserEntries = (userIndex) => {
@@ -99,37 +102,33 @@ const updateUserEntries = (userIndex) => {
 
 // Home:
 app.get('/', (req, res) => {
-  res.send();
+  res.send(database.users);
 })
 
 // Sign In:
 app.post('/signin', (req, res) => {
-  const loginInformation = {
-    email: req.body.email,
-    password: req.body.password
-  };
+  const { name, email, password } = req.body;
+  const loginInformation = { name, email, password };
+
   const userPackage = findUser(loginInformation);
 
   res.json(userPackage);
+  console.log('Sign In Response:',userPackage);
 })
 
 // Register New User:
 app.post('/register', (req, res) => {
-  const { name, email } = req.body;
-  bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-    const password = hash;
-    return password;
-  })
-  const userPackage = findUser({ email: email, password: password });
+  const { name, email, password } = req.body;
+  const userInformation = { name, email, password };
+  const userPackage = findUser(userInformation);
 
-  if (!userPackage.userValid)
-    {
-      newUser(name, email, password);
-      res.json(database.users[database.users.length - 1]);
-    } else
-    {
-      res.json('User already exist.');
-    }
+  if (!userPackage.userValid) {
+    newUser(userInformation);
+    console.log(database.users);
+    res.json(database.users[database.users.length - 1]);
+  } else {
+    res.json('User already exist.');
+  }
 })
 
 // Pull Profile Information On ID:
