@@ -124,7 +124,6 @@ app.post('/register', (req, res) => {
 
   if (!userPackage.userValid) {
     newUser(userInformation);
-    console.log(database.users);
     res.json(database.users[database.users.length - 1]);
   } else {
     res.json('User already exist.');
