@@ -110,7 +110,6 @@ app.post('/signin', (req, res) => {
   const userPackage = findUser(loginInformation);
 
   res.json(userPackage);
-  console.log('Sign In Response:',userPackage);
 })
 
 // Register New User:
@@ -150,7 +149,7 @@ app.put('/image', (req, res) => {
   const user = findUser(id);
   const entriesUpdater = updateUserEntries(user.userIndex);
   
-  res.send(entriesUpdater);
+  res.json(entriesUpdater.entries);
 })
 
 // Run Server:
