@@ -156,5 +156,4 @@ app.put('/image', (req, res) => {
 // Run Server:
 app.listen(port, () => {
   console.log('app is running on port 3000...')
-  console.log(database.users);
 })
