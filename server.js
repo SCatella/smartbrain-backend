@@ -1,49 +1,35 @@
+require('dotenv').config();
 const express = require('express');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const knex = require('knex')
+  
 
 const app = express();
 const port = 3000;
 
 const saltRounds = 10;
 
+const databaseAccessKey = process.env.DATABASE_PASSWORD;
+
+const database = knex ({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    user: 'postgres',
+    password: databaseAccessKey,
+    database: 'smartbrain'
+  }
+});
+
+database.select('*').from('users').then(data => {
+  console.log(data);
+})
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cors());
 
-let database = {
-  users: [
-    {
-      id: '120',
-      name: 'John',
-      email: 'john@gmail.com', //$2b$10$6Jppb9PvKXohHO0gsmee1.VXFH4sQQp.AewifecTO5ArDn7NSV522
-      password: 'cookies',
-      entries: 0,
-      joined: new Date()
-    },
-    {
-      id: '121',
-      name: 'Sally',
-      email: 'sally@gmail.com',
-      password: 'apples', //$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq
-      entries: 0,
-      joined: new Date()
-    }
-  ],
-  login: [
-    {
-      id: 987,
-      hash: '$2b$10$6Jppb9PvKXohHO0gsmee1.VXFH4sQQp.AewifecTO5ArDn7NSV522',
-      email: 'john@gmail.com'
-    },
-    {
-      id: 988,
-      hash: '$2b$10$7LbtayCyOwOcxLuLg8zCneWLfLhxL5FIv2w3aSUK5eiGuOvsdd1Kq',
-      email: 'sally@gmail.com'
-    }
-  ]
-}
 
 const findUser = (value) => {
   let package = {
